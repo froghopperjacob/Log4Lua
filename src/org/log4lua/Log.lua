@@ -58,6 +58,7 @@ return function()
 
 	Log.Log = function(self, giveConfig)
 		config = validateOrFixConfig(giveConfig)
+		self.ClassLoggers = { }
 
 		return self
 	end
@@ -72,7 +73,19 @@ return function()
 			return false
 		end
 
-		return ClassLog(config, class)
+		local ReturnClassLog = ClassLog(config, class)
+
+		table.insert(self.ClassLoggers, ReturnClassLog)
+
+		return ReturnClassLog
+	end
+
+	Log.destroy = function(self)
+		for _, ClassLog in pairs(self.ClassLoggers) do
+			ClassLog:destroy()
+		end
+
+		return self:unregister()
 	end
 
 	return Log

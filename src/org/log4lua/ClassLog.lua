@@ -117,5 +117,9 @@ return function()
 		return self:__log(self.config["FunctionCalls"]["Error"], message, { ... }, "Error")
 	end
 
+	ClassLog.destroy = function(self)
+		return self:unregister()
+	end
+
 	return ClassLog
 end
