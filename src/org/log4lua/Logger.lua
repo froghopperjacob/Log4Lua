@@ -61,7 +61,7 @@ return function()
 		if (self.config["IncludeTime"]) then
 			local timeTable = os.date("!*t", os.time())
 
-			sendTime = string.format("d:d:d d:d:d",
+			sendTime = string.format("%d/%d/%d %d:%d:%d",
 				timeTable["year"], timeTable["month"], timeTable["day"],
 				timeTable["hour"], timeTable["min"], timeTable["sec"])
 		end
@@ -69,10 +69,10 @@ return function()
 		self:unregister()
 
 		return self.func(replacePatternMultiple(self.config.Pattern, {
-			["%TYPE"] = self.logType,
-			["%TIME"] = sendTime,
-			["%CLASS"] = self.class["ClassName"],
-			["%MESSAGE"] = sendMessage
+			[":TYPE:"] = self.logType or "N/A",
+			[":TIME:"] = sendTime,
+			[":CLASS:"] = self.class["className"] or "N/A",
+			[":MESSAGE:"] = sendMessage or "N/A"
 		}))
 	end
 

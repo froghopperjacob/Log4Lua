@@ -3,11 +3,11 @@ return function()
 
 	FDK:wrapEnvironment(getfenv())
 
-	local Log = import("org.log4lua.Log")
+	local LogClass = import("org.log4lua.Log")
 
 	local Test = BaseClass:new("Test")
 
-	local config, ClassLog = {
+	local config, noLog, Log, ClassLog, BadLog, NoLog = {
 		["Debug"] = true,
 
 		["FunctionCalls"] = {
@@ -16,18 +16,41 @@ return function()
 			["Warn"] = function() return 3 end,
 			["Error"] = function() return 4 end
 		}
-	}, nil
+	}, {
+		["Debug"] = false,
+		["Info"] = false,
+		["Warn"] = false,
+		["Error"] = false
+	}, nil, nil, nil, nil
 
 	--print(ClassLog:atDebug())
 
 	describe("Log", function()
 		it("should be ok", function()
-			expect(Log).to.be.ok()
+			expect(LogClass).to.be.ok()
+		end)
+
+		describe("Error checking", function()
+			it("should fail with no config", function()
+				expect(function()
+					LogClass:getLogger({})
+				end).to.throw()
+			end)
+
+			it("should give default config for invalid config", function()
+				expect(function()
+					 BadLog = LogClass("a")
+				end).never.to.throw()
+			end)
+
+			it("should fail with non string message", function()
+				expect(BadLog:getLogger(Test):debug(123)).to.equal(false)
+			end)
 		end)
 
 		it("should use the log correctly", function()
 			expect(function()
-				Log(config)
+				Log = LogClass(config)
 			end).never.to.throw()
 		end)
 
@@ -122,6 +145,59 @@ return function()
 				it("error should log with arguments", function()
 					expect(ClassLog:error("t {} {}", 't')).to.equal(4)
 				end)
+			end)
+
+			it("should concat tables", function()
+				expect(ClassLog:debug("{}", {1,2,3,4})).to.equal(1)
+			end)
+
+			it("should tostring non string/table arguments", function()
+				expect(ClassLog:debug("{}", 1)).to.equal(1)
+			end)
+
+			describe("Fakelogger", function()
+				NoLog = LogClass(noLog)
+				local NoLogClass = NoLog:getLogger(Test)
+
+				it("false for debug", function()
+					expect(NoLogClass:debug()).to.equal(false)
+				end)
+
+				it("false for info", function()
+					expect(NoLogClass:info()).to.equal(false)
+				end)
+
+				it("false for warn", function()
+					expect(NoLogClass:warn()).to.equal(false)
+				end)
+
+				it("false for error", function()
+					expect(NoLogClass:error()).to.equal(false)
+				end)
+
+				it("false for atDebug", function()
+					expect(NoLogClass:atDebug():addArgument():log()).to.equal(false)
+				end)
+
+				it("false for atInfo", function()
+					expect(NoLogClass:atInfo():addArgument():log()).to.equal(false)
+				end)
+
+				it("false for atWarn", function()
+					expect(NoLogClass:atWarn():addArgument():log()).to.equal(false)
+				end)
+
+				it("false for atError", function()
+					expect(NoLogClass:atError():addArgument():log()).to.equal(false)
+				end)
+			end)
+
+			it("should destroy properly", function()
+				expect(function()
+					Log:destroy()
+					BadLog:destroy()
+					NoLog:destroy()
+				end).never.to.throw()
 			end)
 		end)
 	end)

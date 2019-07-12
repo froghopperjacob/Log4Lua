@@ -6,7 +6,7 @@ local defaultConfig = {
 
 	["IncludeTime"] = true,
 
-	["Pattern"] = "[%TYPE | %TIME | %CLASS] - %MESSAGE",
+	["Pattern"] = "[:TYPE: | :TIME: | :CLASS:] - :MESSAGE:",
 	["ReplacePattern"] = "{}",
 
 	["FunctionCalls"] = {
@@ -81,8 +81,8 @@ return function()
 	end
 
 	Log.destroy = function(self)
-		for _, ClassLog in pairs(self.ClassLoggers) do
-			ClassLog:destroy()
+		for _, ClassLogP in pairs(self.ClassLoggers) do
+			ClassLogP:destroy()
 		end
 
 		return self:unregister()

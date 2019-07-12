@@ -8,18 +8,11 @@ local fakeLogger = {
 	end
 }
 
-local deepCopy
-deepCopy = function(orig)
-	local originalType, copy = typeof(orig), { }
+local function shallowCopy(tab)
+	local copy = { }
 
-	if (originalType == 'table') then
-		for originalKey, originalValue in next, orig, nil do
-			copy[deepCopy(originalKey)] = deepCopy(originalValue)
-		end
-
-		setmetatable(copy, deepCopy(getmetatable(orig)))
-	else
-		copy = orig
+	for i, v in pairs(tab) do
+		copy[i] = v
 	end
 
 	return copy
@@ -44,7 +37,7 @@ return function()
 
 	ClassLog.atDebug = function(self)
 		if (not self.config["Debug"]) then
-			return deepCopy(fakeLogger)
+			return shallowCopy(fakeLogger)
 		end
 
 		return self:__atLog(self.config["FunctionCalls"]["Debug"], "Debug")
@@ -52,7 +45,7 @@ return function()
 
 	ClassLog.atInfo = function(self)
 		if (not self.config["Info"]) then
-			return deepCopy(fakeLogger)
+			return shallowCopy(fakeLogger)
 		end
 
 		return self:__atLog(self.config["FunctionCalls"]["Info"], "Info")
@@ -60,7 +53,7 @@ return function()
 
 	ClassLog.atWarn = function(self)
 		if (not self.config["Warn"]) then
-			return deepCopy(fakeLogger)
+			return shallowCopy(fakeLogger)
 		end
 
 		return self:__atLog(self.config["FunctionCalls"]["Warn"], "Warn")
@@ -68,7 +61,7 @@ return function()
 
 	ClassLog.atError = function(self)
 		if (not self.config["Error"]) then
-			return deepCopy(fakeLogger)
+			return shallowCopy(fakeLogger)
 		end
 
 		return self:__atLog(self.config["FunctionCalls"]["Error"], "Error")
