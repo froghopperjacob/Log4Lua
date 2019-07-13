@@ -6,7 +6,7 @@ local defaultConfig = {
 
 	["IncludeTime"] = true,
 
-	["Pattern"] = "[:TYPE: | :TIME: | :CLASS:] - :MESSAGE: \n\t :TRACEBACK:",
+	["Pattern"] = "[:TYPE: | :TIME: | :CLASS:] - :MESSAGE: :TRACEBACK:",
 	["ReplacePattern"] = "{}",
 
 	["FunctionCalls"] = {

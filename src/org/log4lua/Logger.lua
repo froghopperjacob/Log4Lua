@@ -46,6 +46,7 @@ return function()
 		end
 
 		local sendMessage = message
+		local traceback = ""
 		local sendTime = "Time"
 
 		if (#self.arguments > 0) then
@@ -66,6 +67,10 @@ return function()
 				timeTable["hour"], timeTable["min"], timeTable["sec"])
 		end
 
+		if (self.logType == "Error") then
+			traceback = "\n\n" .. debug.traceback()
+		end
+
 		self:unregister()
 
 		return self.func(replacePatternMultiple(self.config.Pattern, {
@@ -73,7 +78,7 @@ return function()
 			[":TIME:"] = sendTime,
 			[":CLASS:"] = self.class["className"] or "N/A",
 			[":MESSAGE:"] = sendMessage or "N/A",
-			[":TRACEBACK:"] = debug.traceback()
+			[":TRACEBACK:"] = traceback
 		}))
 	end
 
