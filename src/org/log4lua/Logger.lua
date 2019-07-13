@@ -72,7 +72,8 @@ return function()
 			[":TYPE:"] = self.logType or "N/A",
 			[":TIME:"] = sendTime,
 			[":CLASS:"] = self.class["className"] or "N/A",
-			[":MESSAGE:"] = sendMessage or "N/A"
+			[":MESSAGE:"] = sendMessage or "N/A",
+			[":TRACEBACK:"] = debug.traceback()
 		}))
 	end
 
