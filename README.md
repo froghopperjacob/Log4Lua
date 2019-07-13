@@ -87,7 +87,7 @@ return function()
 	local Handler = Log4Lua:getLogger(Main)
 
 	Main.hello = function(name)
-		return Handler.info("Hello {}!", name)
+		return Handler:info("Hello {}!", name)
 	end
 
 	return Main
@@ -102,8 +102,8 @@ return function()
 
 	Other.bye = function(name)
 		return Handler.atDebug()
-			.addArgument(name)
-			.log("Bye {}!")
+			:addArgument(name)
+			:log("Bye {}!")
 	end
 
 	return Other
