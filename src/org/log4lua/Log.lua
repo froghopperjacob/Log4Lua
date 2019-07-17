@@ -63,17 +63,21 @@ return function()
 		return self
 	end
 
-	Log.getLogger = function(self, class)
-		if (config == nil) then
-			LogClassLogger:atError()
-				:addArgument("a config class")
-				:addArgument(config)
-				:log("Expected: {}, Got: {}")
+	Log.getLogger = function(self, class, classLogConfig)
+		local useConfig = classLogConfig or config
 
-			return false
+		if (useConfig == nil) then
+			return LogClassLogger:atError()
+				:addArgument("a config class")
+				:addArgument(useConfig)
+				:log("Expected: {}, Got: {}")
 		end
 
-		local ReturnClassLog = ClassLog(config, class)
+		if (useConfig == classLogConfig) then
+			useConfig = validateOrFixConfig(useConfig)
+		end
+
+		local ReturnClassLog = ClassLog(useConfig, class)
 
 		table.insert(self.ClassLoggers, ReturnClassLog)
 
